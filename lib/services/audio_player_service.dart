@@ -5,7 +5,7 @@ import '../models/song.dart';
 import 'database_service.dart';
 
 /// Repeat-mode options exposed to the UI.
-enum RepeatMode { off, one, all }
+enum AudioRepeatMode { off, one, all }
 
 /// Wraps [AudioPlayer] from just_audio and exposes a simple API
 /// for play, pause, skip, seek, shuffle, and repeat.
@@ -20,7 +20,7 @@ class AudioPlayerService extends ChangeNotifier {
   List<Song> _originalPlaylist = []; // kept to restore order after shuffle
   int _currentIndex = -1;
   bool _isShuffleOn = false;
-  RepeatMode _repeatMode = RepeatMode.off;
+  AudioRepeatMode _repeatMode = AudioRepeatMode.off;
 
   AudioPlayerService(this._databaseService) {
     _initListeners();
@@ -56,7 +56,7 @@ class AudioPlayerService extends ChangeNotifier {
 
   bool get isPlaying => _player.playing;
   bool get isShuffleOn => _isShuffleOn;
-  RepeatMode get repeatMode => _repeatMode;
+  AudioRepeatMode get repeatMode => _repeatMode;
 
   Duration get position => _player.position;
   Duration get duration => _player.duration ?? Duration.zero;
@@ -115,13 +115,13 @@ class AudioPlayerService extends ChangeNotifier {
   Future<void> skipNext() async {
     if (_playlist.isEmpty) return;
 
-    if (_repeatMode == RepeatMode.one) {
+    if (_repeatMode == AudioRepeatMode.one) {
       await _player.seek(Duration.zero);
       await _player.play();
     } else if (_currentIndex < _playlist.length - 1) {
       _currentIndex++;
       await _loadAndPlay();
-    } else if (_repeatMode == RepeatMode.all) {
+    } else if (_repeatMode == AudioRepeatMode.all) {
       _currentIndex = 0;
       await _loadAndPlay();
     }
@@ -140,7 +140,7 @@ class AudioPlayerService extends ChangeNotifier {
     if (_currentIndex > 0) {
       _currentIndex--;
       await _loadAndPlay();
-    } else if (_repeatMode == RepeatMode.all) {
+    } else if (_repeatMode == AudioRepeatMode.all) {
       _currentIndex = _playlist.length - 1;
       await _loadAndPlay();
     }
@@ -174,14 +174,14 @@ class AudioPlayerService extends ChangeNotifier {
   /// Cycle repeat mode: off → all → one → off.
   void cycleRepeatMode() {
     switch (_repeatMode) {
-      case RepeatMode.off:
-        _repeatMode = RepeatMode.all;
+      case AudioRepeatMode.off:
+        _repeatMode = AudioRepeatMode.all;
         break;
-      case RepeatMode.all:
-        _repeatMode = RepeatMode.one;
+      case AudioRepeatMode.all:
+        _repeatMode = AudioRepeatMode.one;
         break;
-      case RepeatMode.one:
-        _repeatMode = RepeatMode.off;
+      case AudioRepeatMode.one:
+        _repeatMode = AudioRepeatMode.off;
         break;
     }
     notifyListeners();
@@ -191,16 +191,16 @@ class AudioPlayerService extends ChangeNotifier {
 
   void _onSongComplete() {
     switch (_repeatMode) {
-      case RepeatMode.one:
+      case AudioRepeatMode.one:
         _player.seek(Duration.zero);
         _player.play();
         break;
-      case RepeatMode.all:
+      case AudioRepeatMode.all:
         _currentIndex =
             (_currentIndex < _playlist.length - 1) ? _currentIndex + 1 : 0;
         _loadAndPlay();
         break;
-      case RepeatMode.off:
+      case AudioRepeatMode.off:
         if (_currentIndex < _playlist.length - 1) {
           _currentIndex++;
           _loadAndPlay();

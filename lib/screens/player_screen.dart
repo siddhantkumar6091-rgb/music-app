@@ -265,10 +265,10 @@ class PlayerScreen extends StatelessWidget {
           // Repeat
           IconButton(
             icon: Icon(
-              audio.repeatMode == RepeatMode.one
+              audio.repeatMode == AudioRepeatMode.one
                   ? Icons.repeat_one_rounded
                   : Icons.repeat_rounded,
-              color: audio.repeatMode != RepeatMode.off
+              color: audio.repeatMode != AudioRepeatMode.off
                   ? AppTheme.primaryGreen
                   : AppTheme.subtleText,
               size: 24,
