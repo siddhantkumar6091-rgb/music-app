@@ -1,5 +1,5 @@
 workflows:
-android-workflow:
+  android-workflow:
 name: Build APK
 environment:
 flutter: stable
