@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.music_player">
-
     <application
         android:label="music"
         android:icon="@mipmap/ic_launcher">
