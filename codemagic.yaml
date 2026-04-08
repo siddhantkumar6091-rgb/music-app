@@ -6,8 +6,7 @@ workflows:
       flutter: stable
 
     scripts:
-      - flutter clean
-      - rm -rf ~/.pub-cache
+      - flutter clean || true
       - flutter pub get
       - flutter build apk --release
 
